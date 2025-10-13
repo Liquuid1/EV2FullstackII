@@ -1,0 +1,21 @@
+.product-card {
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+  transform: scale(1.02);
+}
+
+.card-img-top {
+  object-fit: cover;
+  height: 200px;
+  border-radius: 12px 12px 0 0;
+}
+.card-body {
+  padding: 1rem;
+}
+
+.btn {
+  margin: 20px 20px;
+}
