@@ -17,20 +17,7 @@ export const Products = () => {
       try {
         const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:AZPo4EA2/product');
         const data = await response.json();
-
-        // Asegurarse de que los datos estén en formato de array
-        const productosAdaptados = Array.isArray(data)
-          ? data.map((item) => ({
-              id: item.id,
-              title: item.title,
-              price: item.base_price,
-              description: item.description,
-              imagen: item.imagen || 'https://storage.googleapis.com/x8ki-letl-twmt.n7.xano.io/vault/UHIZ7yLi/VA5fKOFhqmLuNPf8TvFBSQU4Pus/LXrZbA../96b99b4a/adg.jpg',
-              category_id: item.category_id,
-            }))
-          : [];
-
-        setProductos(productosAdaptados);
+        setProductos(data);
       } catch (err) {
         console.error('Error al cargar productos:', err);
         setError('No se pudieron cargar los productos');
@@ -44,15 +31,7 @@ export const Products = () => {
 
   const agregarAlCarrito = (producto) => {
   const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-  const nuevoItem = {
-    id: producto.id,
-    nombre: producto.title,
-    imagen: producto.imagen,
-    precio: producto.price,
-    talla: null,
-    cantidad: 1,
-  };
-  localStorage.setItem('carrito', JSON.stringify([...carrito, nuevoItem]));
+  localStorage.setItem('carrito', JSON.stringify([...carrito, producto]));
   alert('Producto agregado al carrito');
 };
 
@@ -74,8 +53,7 @@ export const Products = () => {
           <Search setBusqueda={setBusqueda} />
         </div>
       </div>
-
-      <FiltroBar setFiltro={setFiltro} />
+      <FiltroBar setFiltro={setFiltro} filtroActivo={filtro} />
 
       {loading ? (
         <p className="text-center">Cargando productos...</p>
