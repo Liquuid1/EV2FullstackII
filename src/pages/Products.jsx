@@ -17,8 +17,6 @@ export const Products = () => {
       try {
         const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:AZPo4EA2/product');
         const data = await response.json();
-        console.log(data[0].image.url);
-
         setProductos(data);
       } catch (err) {
         console.error('Error al cargar productos:', err);
@@ -33,15 +31,7 @@ export const Products = () => {
 
   const agregarAlCarrito = (producto) => {
   const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-  const nuevoItem = {
-    id: producto.id,
-    nombre: producto.title,
-    imagen: producto.imagen,
-    precio: producto.price,
-    talla: null,
-    cantidad: 1,
-  };
-  localStorage.setItem('carrito', JSON.stringify([...carrito, nuevoItem]));
+  localStorage.setItem('carrito', JSON.stringify([...carrito, producto]));
   alert('Producto agregado al carrito');
 };
 
