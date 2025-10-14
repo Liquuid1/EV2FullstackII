@@ -5,7 +5,6 @@ import './ProductPreview.css';
 
 export const ProductPreview = () => {
   const [productList, setProductList] = useState([]);
-  const [imageList, setImageList] = useState([]);
   
   useEffect(() => {
     fetch('https://x8ki-letl-twmt.n7.xano.io/api:AZPo4EA2/product')
@@ -20,39 +19,24 @@ export const ProductPreview = () => {
       })
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
-  
-  useEffect(() => {
-    fetch('https://x8ki-letl-twmt.n7.xano.io/api:AZPo4EA2/product_image')
-      .then((response) => response.json())
-      .then((data) => setImageList(data))
-      .catch((error) => console.error('Error fetching product images:', error));
-  }, []);
-  
-  const combinedList = productList.map((product) => {
-  const image = imageList.find((img) => img.id === product.id);
-  return {
-    name: product.title || 'Producto sin nombre',
-    price: product.base_price || '$0',
-    image: image?.url.url || '/assets/default.png', // Asegúrate de que 'url' exista en la imagen
-  };
-});
+  console.log(productList[0].image.url);
 
   return (
     <section className="product-preview-section">
       <h2 className="product-title">Lo más 🔥 del momento</h2>
       <div className="product-grid">
-        {combinedList.slice(0, 3).map((product) => (
+        {productList.slice(0, 3).map((product) => (
           <div key={product.id} className="product-card">
             <div className="product-image-wrapper">
-              <img src={product.image} alt={product.name} className="product-image" />
+              <img src={product.image.url} alt={product.title} className="product-image" />
             </div>
-            <h3 className="product-name">{product.name}</h3>
+            <h3 className="product-name">{product.title}</h3>
             <p className="product-price">
               {new Intl.NumberFormat('es-CL', {
                 style: 'currency',
                 currency: 'CLP',
                 minimumFractionDigits: 0,
-              }).format(Number(product.price))}
+              }).format(Number(product.base_price))}
             </p>
           </div>
         ))}
