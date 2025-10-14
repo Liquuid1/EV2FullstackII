@@ -126,7 +126,7 @@ export const Admin = () => {
     };
     try {
       const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:AZPo4EA2/product/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
