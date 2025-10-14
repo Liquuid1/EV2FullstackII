@@ -10,7 +10,9 @@ import { Footer } from './layout/Footer'
 import { Login } from './components/login/Login'
 import { Registro } from './components/registro/Registro'
 import { Carrito } from './components/carrito/carrito'
+
 import { ProductoDetalle } from './components/productsDetail/productoDetalle'
+import { Admin } from './components/admin/Admin'
 
 function App() {
 
@@ -29,6 +31,7 @@ function App() {
           <Route path='/carrito' element={<Carrito />} />
           <Route path="/producto/:id" element={<ProductoDetalle />} />
 
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       <Footer />
       </BrowserRouter>
