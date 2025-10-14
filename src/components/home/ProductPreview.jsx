@@ -19,7 +19,6 @@ export const ProductPreview = () => {
       })
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
-  console.log(productList[0].image.url);
 
   return (
     <section className="product-preview-section">

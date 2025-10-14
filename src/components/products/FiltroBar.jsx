@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './FiltroBar.css';
 
-export const FiltroBar = ({ setFiltro }) => {
+export const FiltroBar = ({ setFiltro, filtroActivo }) => {
   const [categorias, setCategorias] = useState([]);
 
   useEffect (() => {
@@ -18,12 +18,24 @@ export const FiltroBar = ({ setFiltro }) => {
     fetchCategorias();
   }, []);
 
+  const manejarFiltro = (id) => {
+    setFiltro(id);
+    setFiltroActivo(id);
+  };
+
   return (
     <div className="filtro-bar d-flex flex-wrap justify-content-center gap-2 mb-4">
+      <button
+        className={`btn filtro-btn ${filtroActivo === 'todos' ? 'active' : 'btn-outline-dark'}`}
+        onClick={() => setFiltro('todos')}
+      >
+        Todos
+      </button>
+
       {categorias.map((cat) => (
         <button
           key={cat.id}
-          className="btn btn-outline-dark filtro-btn"
+          className={`btn filtro-btn ${filtroActivo === cat.id ? 'active' : 'btn-outline-dark'}`}
           onClick={() => setFiltro(cat.id)}
         >
           {cat.name}
