@@ -52,7 +52,7 @@ export const Login = () => {
       localStorage.setItem('userData', JSON.stringify(userData));
 
       // Redirigir según el ID
-      if (userData.id === 17) {
+      if (userData.id === 23) {
         navigate('/admin');
       } else {
         navigate('/');
