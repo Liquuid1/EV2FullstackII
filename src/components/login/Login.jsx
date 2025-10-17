@@ -28,34 +28,54 @@ export const Login = () => {
         throw new Error(data.message || 'Error al iniciar sesión');
       }
 
-      // Guardar token o datos si es necesario
-      localStorage.setItem('user', JSON.stringify(data));
+      // Guardar token y pedir datos del usuario para obtener el role
+      const token = data.authToken || data.token || (data?.tokenValue) || null;
+      if (token) localStorage.setItem('token', token);
 
-      const token = data.authToken
-      localStorage.setItem('token', token);
-
-      const user = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:cRiGHljp/auth/me', {
+      const meRes = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:cRiGHljp/auth/me', {
         method: 'GET',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        },
+        }
       });
 
-      const userData = await user.json();
+      const userData = await meRes.json();
+      if (!meRes.ok) throw new Error(userData.message || 'Error al obtener datos del usuario');
 
-      if (!user.ok) {
-        throw new Error(userData.message || 'Error al obtener datos del usuario');
-      }
-
-      // Guardar datos del usuario si es necesario
+      // Guardar datos de usuario incluyendo el role
+      // Normalize: user may be nested in userData.user or userData.data
+      const savedUser = userData.user || userData.data || userData;
+      localStorage.setItem('user', JSON.stringify(savedUser));
       localStorage.setItem('userData', JSON.stringify(userData));
 
-      // Redirigir según el ID
-      if (userData.id === 23) {
+      // Detect role in multiple possible shapes
+      let roleVal = '';
+      if (savedUser.role) {
+        if (typeof savedUser.role === 'string') roleVal = savedUser.role;
+        else if (savedUser.role.name) roleVal = savedUser.role.name;
+      }
+      if (!roleVal && savedUser.role_id) roleVal = String(savedUser.role_id);
+      if (!roleVal && savedUser.roles && Array.isArray(savedUser.roles) && savedUser.roles[0]) {
+        roleVal = savedUser.roles[0].name || savedUser.roles[0].role || '';
+      }
+      // Fallback: some APIs return email under different fields
+      const emailCandidate = (savedUser.email || savedUser.email_address || savedUser.correo || savedUser.username || '').toString().toLowerCase();
+      // If role not detected but email matches known admin, assume admin
+      if (!roleVal && emailCandidate === 'admin@snkrhood.com') {
+        roleVal = 'administrador';
+      }
+      roleVal = (roleVal || '').toString().toLowerCase();
+      localStorage.setItem('role', roleVal);
+
+      // Redirigir según rol detectado
+      if (roleVal.includes('admin') || roleVal === '1' || roleVal.includes('administrador')) {
+        // notify listeners
+        try { window.dispatchEvent(new Event('authChanged')); } catch(e){}
         navigate('/admin');
       } else {
-        navigate('/');
+        try { window.dispatchEvent(new Event('authChanged')); } catch(e){}
+        navigate('/cliente');
       }
     } catch (err) {
       setError(err.message);

@@ -4,11 +4,14 @@ import './SubscriptionForm.css';
 export const SubscriptionForm = () => {
   const [email, setEmail] = useState('');
   const [subscriberCount] = useState(1287); // Simulado, puedes conectar a backend luego
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Correo suscrito:', email);
+    setSuccess('El correo fue registrado exitosamente');
     setEmail('');
+    setTimeout(() => setSuccess(''), 3000);
   };
 
   return (
@@ -35,6 +38,7 @@ export const SubscriptionForm = () => {
               Suscribirme
             </button>
           </form>
+          {success && <div className="mt-2 text-success">{success}</div>}
         </div>
       </div>
     </section>
