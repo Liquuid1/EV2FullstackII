@@ -1,8 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Footer.css'
 
 export const Footer = () => {
+  const navigate = useNavigate();
   return (
     <footer className="bg-dark text-light pt-5 pb-3">
       <div className="container">
@@ -12,10 +13,7 @@ export const Footer = () => {
           <div className="col-md-4 mb-4">
             <h2 className="text-uppercase">Snkr Hood</h2>
             <p>Tu tienda de zapatillas urbanas en Chile.</p>
-            <form className="d-flex">
-              <input type="email" className="form-control me-2" placeholder="Tu correo electrónico" />
-              <button type="submit" className="btn btn-danger">Suscribirme</button>
-            </form>
+            <FooterNewsletter />
             <div className="col-md-6 pt-4">
               <h6>Legal</h6>
               <ul className="list-unstyled">
@@ -35,7 +33,7 @@ export const Footer = () => {
                 <li><Link to="/products">Productos</Link></li>
                 <li><Link to="/blog">Blog</Link></li>
                 <li><Link to="/about">Nosotros</Link></li>
-                <li><Link to="/contact">Contacto</Link></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); navigate('/contact'); }}>Contacto</a></li>
               </ul>
             </div>
             <div>
@@ -78,5 +76,27 @@ export const Footer = () => {
         </div>
       </div>
     </footer>
+  )
+}
+
+const FooterNewsletter = () => {
+  const [email, setEmail] = React.useState('');
+  const [success, setSuccess] = React.useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSuccess('El correo fue registrado exitosamente');
+    setEmail('');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  return (
+    <>
+      <form className="d-flex" onSubmit={handleSubmit}>
+        <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control me-2" placeholder="Tu correo electrónico" required />
+        <button type="submit" className="btn btn-danger">Suscribirme</button>
+      </form>
+      {success && <div className="mt-2 text-success">{success}</div>}
+    </>
   )
 }
