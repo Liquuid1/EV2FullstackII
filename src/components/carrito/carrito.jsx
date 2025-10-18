@@ -3,7 +3,7 @@ import './carrito.css';
 
 export const Carrito = () => {
   const [carrito, setCarrito] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState();
 
   useEffect(() => {
   const handleFocus = () => {
@@ -22,8 +22,9 @@ export const Carrito = () => {
   }, []);
 
   useEffect(() => {
-    const subtotal = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+    const subtotal = carrito.reduce((acc, item) => acc + item.base_price, 0);
     setTotal(subtotal);
+    console.log(subtotal);
   }, [carrito]);
 
   const eliminarProducto = (id) => {
@@ -42,12 +43,12 @@ export const Carrito = () => {
         <div className="carrito-lista">
           {carrito.map((item) => (
             <div key={item.id} className="carrito-item">
-              <img src={item.imagen} alt={item.nombre} />
+              <img src={item.image.url} alt={item.title} />
               <div className="carrito-detalle">
-                <h5>{item.nombre}</h5>
-                <p>Talla: {item.talla}</p>
-                <p>Cantidad: {item.cantidad}</p>
-                <p>Precio: ${item.precio.toLocaleString('es-CL')}</p>
+                <h5>{item.title}</h5>
+                <p>Talla: 39</p>
+                <p>Cantidad: 1</p>
+                <p>Precio: ${item.base_price.toLocaleString('es-CL')}</p>
                 <button onClick={() => eliminarProducto(item.id)}>Eliminar</button>
               </div>
             </div>

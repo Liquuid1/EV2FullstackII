@@ -49,6 +49,7 @@ export const Login = () => {
       localStorage.setItem('user', JSON.stringify(savedUser));
       localStorage.setItem('userData', JSON.stringify(userData));
 
+<<<<<<< HEAD
       // Detect role in multiple possible shapes
       let roleVal = '';
       if (savedUser.role) {
@@ -72,6 +73,10 @@ export const Login = () => {
       if (roleVal.includes('admin') || roleVal === '1' || roleVal.includes('administrador')) {
         // notify listeners
         try { window.dispatchEvent(new Event('authChanged')); } catch(e){}
+=======
+      // Redirigir según el ID
+      if (userData.id === 23) {
+>>>>>>> origin/main
         navigate('/admin');
       } else {
         try { window.dispatchEvent(new Event('authChanged')); } catch(e){}
