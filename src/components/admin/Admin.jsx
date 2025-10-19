@@ -4,14 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { logout, getCurrentUser } from '../../utils/auth';
 
 export const Admin = () => {
-<<<<<<< HEAD
   const navigate = useNavigate();
   const user = getCurrentUser();
 
-  // Estados para productos y usuarios
-  // Estado para la sección activa
-=======
->>>>>>> origin/main
   const [seccion, setSeccion] = useState('');
   const [accionProducto, setAccionProducto] = useState('listar');
   const [accionUsuario, setAccionUsuario] = useState('listar');
