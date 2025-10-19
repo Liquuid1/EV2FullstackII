@@ -3,7 +3,7 @@ import './carrito.css';
 
 export const Carrito = () => {
   const [carrito, setCarrito] = useState([]);
-  const [total, setTotal] = useState();
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
   const handleFocus = () => {
@@ -22,13 +22,13 @@ export const Carrito = () => {
   }, []);
 
   useEffect(() => {
-    const subtotal = carrito.reduce((acc, item) => acc + item.base_price, 0);
+    const subtotal = carrito.reduce((acc, item) => acc + (Number(item.base_price || 0) * (item.cantidad || 1)), 0);
     setTotal(subtotal);
     console.log(subtotal);
   }, [carrito]);
 
-  const eliminarProducto = (id) => {
-    const actualizado = carrito.filter(item => item.id !== id);
+  const eliminarProducto = (id, talla) => {
+    const actualizado = carrito.filter(item => !(item.id === id && String(item.talla) === String(talla)));
     setCarrito(actualizado);
     localStorage.setItem('carrito', JSON.stringify(actualizado));
   };
@@ -42,19 +42,19 @@ export const Carrito = () => {
       ) : (
         <div className="carrito-lista">
           {carrito.map((item) => (
-            <div key={item.id} className="carrito-item">
-              <img src={item.image.url} alt={item.title} />
+            <div key={(item.id && item.talla) ? `${item.id}-${item.talla}` : (item.id || Math.random())} className="carrito-item">
+              <img src={(item.image && item.image.url) ? item.image.url : '/placeholder.png'} alt={item.title || 'producto'} />
               <div className="carrito-detalle">
                 <h5>{item.title}</h5>
-                <p>Talla: 39</p>
-                <p>Cantidad: 1</p>
-                <p>Precio: ${item.base_price.toLocaleString('es-CL')}</p>
-                <button onClick={() => eliminarProducto(item.id)}>Eliminar</button>
+                <p>Talla: {item.talla}</p>
+                <p>Cantidad: {item.cantidad || 1}</p>
+                <p>Precio: ${Number(item.base_price || 0).toLocaleString('es-CL')}</p>
+                <button onClick={() => eliminarProducto(item.id, item.talla)}>Eliminar</button>
               </div>
             </div>
           ))}
           <div className="carrito-total">
-            <h4>Total: ${total.toLocaleString('es-CL')}</h4>
+            <h4>Total: ${Number(total || 0).toLocaleString('es-CL')}</h4>
             <button className="btn btn-checkout">Ir a pagar</button>
           </div>
         </div>

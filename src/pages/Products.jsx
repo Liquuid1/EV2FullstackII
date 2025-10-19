@@ -29,11 +29,31 @@ export const Products = () => {
     fetchProductos();
   }, []);
 
-  const agregarAlCarrito = (producto) => {
-  const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-  localStorage.setItem('carrito', JSON.stringify([...carrito, producto]));
-  alert('Producto agregado al carrito');
-};
+  const agregarAlCarrito = (producto, talla) => {
+    if (!talla) return alert('Selecciona una talla');
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+    // Crear item estándar
+    const item = {
+      id: producto.id,
+      title: producto.title || producto.nombre || '',
+      image: producto.image || producto.imagen || null,
+      base_price: Number(producto.base_price || producto.precio || 0),
+      talla: talla,
+      cantidad: 1
+    };
+
+    // Si ya existe el mismo producto con misma talla, incrementar cantidad
+    const existenteIndex = carrito.findIndex(it => it.id === item.id && String(it.talla) === String(item.talla));
+    if (existenteIndex >= 0) {
+      carrito[existenteIndex].cantidad = (carrito[existenteIndex].cantidad || 1) + 1;
+    } else {
+      carrito.push(item);
+    }
+
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    alert('Producto agregado al carrito');
+  };
 
   // 🔍 Filtrar productos según búsqueda y categoría
   const productosFiltrados = productos.filter((p) => {

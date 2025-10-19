@@ -16,10 +16,12 @@ export const Registro = () => {
     setError('');
 
     try {
+      // Aseguramos que el rol asignado sea 'cliente' y no se pueda manipular desde frontend
+      const payload = { ...form, role: 'cliente' };
       const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:cRiGHljp/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -27,7 +29,7 @@ export const Registro = () => {
       if (!response.ok) throw new Error(data.message || 'Error al registrarse');
 
       // Guardar token y redirigir
-      localStorage.setItem('token', data.token);
+  localStorage.setItem('token', data.token);
 
       const meRes = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:cRiGHljp/auth/me', {
         method: 'GET',
@@ -40,7 +42,12 @@ export const Registro = () => {
       const user = await meRes.json();
       localStorage.setItem('user', JSON.stringify(user));
 
-      navigate('/');
+      // Redirigir según rol (debiera ser cliente al registrarse)
+      if (user.role === 'administrador' || user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/cliente');
+      }
     } catch (err) {
       setError(err.message);
     }

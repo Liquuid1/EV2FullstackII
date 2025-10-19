@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
+import { useNavigate } from 'react-router-dom';
+import { logout, getCurrentUser } from '../../utils/auth';
 
 export const Admin = () => {
+  const navigate = useNavigate();
+  const user = getCurrentUser();
+
   const [seccion, setSeccion] = useState('');
   const [accionProducto, setAccionProducto] = useState('listar');
   const [accionUsuario, setAccionUsuario] = useState('listar');
@@ -191,7 +196,12 @@ export const Admin = () => {
 
   return (
     <div className="admin-panel">
-      <h2>Panel de Administración</h2>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+        <h2>Panel de Administración</h2>
+        <div>
+          <span style={{marginRight:12}}>Usuario: {user?.name || user?.full_name || ''}</span>
+        </div>
+      </div>
       <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: 32 }}>
         <button className={`admin-btn-main${seccion === 'productos' ? ' active' : ''}`} onClick={() => setSeccion('productos')}>Productos</button>
         <button className={`admin-btn-main${seccion === 'usuarios' ? ' active' : ''}`} onClick={() => setSeccion('usuarios')}>Usuarios</button>
