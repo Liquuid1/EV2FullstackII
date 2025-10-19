@@ -14,12 +14,15 @@ import { Carrito } from './components/carrito/carrito'
 import { ProductoDetalle } from './components/productsDetail/productoDetalle'
 import { Admin } from './components/admin/Admin'
 
+import { useAuth } from './context/context.jsx'
+
 function App() {
+
+  const { user } = useAuth()
 
   return (
     <div className="app-root">
-      <BrowserRouter>
-      <NavBar />
+      <NavBar user={user} />
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/products' element={<Products />} />
@@ -34,7 +37,6 @@ function App() {
           <Route path="/admin" element={<Admin />} />
         </Routes>
       <Footer />
-      </BrowserRouter>
     </div>
   )
 }
