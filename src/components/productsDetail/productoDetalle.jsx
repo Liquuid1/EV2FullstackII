@@ -26,14 +26,21 @@ export const ProductoDetalle = () => {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const nuevoItem = {
       id: producto.id,
-      nombre: producto.nombre,
-      imagen: producto.imagen,
-      precio: producto.precio,
-      talla: [38, 39, 40, 41, 42, 43, 44, 45],
-      cantidad: 10,
+      title: producto.title || producto.nombre || '',
+      image: producto.image || producto.imagen || null,
+      base_price: Number(producto.base_price || producto.precio || 0),
+      talla: talla,
+      cantidad: cantidad || 1,
     };
 
-    localStorage.setItem('carrito', JSON.stringify([...carrito, nuevoItem]));
+    const existenteIndex = carrito.findIndex(it => it.id === nuevoItem.id && String(it.talla) === String(nuevoItem.talla));
+    if (existenteIndex >= 0) {
+      carrito[existenteIndex].cantidad = (carrito[existenteIndex].cantidad || 1) + nuevoItem.cantidad;
+    } else {
+      carrito.push(nuevoItem);
+    }
+
+    localStorage.setItem('carrito', JSON.stringify(carrito));
     alert('Producto agregado al carrito');
   };
 

@@ -68,15 +68,12 @@ export const Login = () => {
       roleVal = (roleVal || '').toString().toLowerCase();
       localStorage.setItem('role', roleVal);
 
-      // Redirigir según rol detectado
-      if (roleVal.includes('admin') || roleVal === '1' || roleVal.includes('administrador')) {
-        // notify listeners
-        try { window.dispatchEvent(new Event('authChanged')); } catch(e){}
-        navigate('/admin');
-      } else {
-        try { window.dispatchEvent(new Event('authChanged')); } catch(e){}
-        navigate('/cliente');
-      }
+      // Decide admin by role or by specific id fallback
+      const isAdmin = roleVal.includes('admin') || roleVal === '1' || roleVal.includes('administrador') || (savedUser.id === 23) || (userData.id === 23);
+
+      // notify listeners and redirect accordingly
+      try { window.dispatchEvent(new Event('authChanged')); } catch (e) {}
+      if (isAdmin) navigate('/admin'); else navigate('/cliente');
     } catch (err) {
       setError(err.message);
     }

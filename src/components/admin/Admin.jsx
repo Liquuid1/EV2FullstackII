@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { logout, getCurrentUser } from '../../utils/auth';
 
 export const Admin = () => {
-  
+  const navigate = useNavigate();
+  const user = getCurrentUser();
+
   const [seccion, setSeccion] = useState('');
   const [accionProducto, setAccionProducto] = useState('listar');
   const [accionUsuario, setAccionUsuario] = useState('listar');
