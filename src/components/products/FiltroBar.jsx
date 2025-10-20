@@ -9,9 +9,17 @@ export const FiltroBar = ({ setFiltro, filtroActivo }) => {
       try {
         const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:AZPo4EA2/category');
         const data = await response.json();
+        if (data.length === 0) throw new Error('No se encontraron categorías');
         setCategorias(data);
       } catch (err) {
         console.error('Error al cargar categorías:', err);
+        const data = Array.of(
+          { id: 'sneakers', name: 'Sneakers' },
+          { id: 'boots', name: 'Boots' },
+          { id: 'sandals', name: 'Sandals' },
+          { id: 'formal', name: 'Formal' }
+        );
+        setCategorias(data);
       }
     };
 
@@ -32,15 +40,19 @@ export const FiltroBar = ({ setFiltro, filtroActivo }) => {
         Todos
       </button>
 
-      {categorias.map((cat) => (
-        <button
-          key={cat.id}
-          className={`btn filtro-btn ${filtroActivo === cat.id ? 'active' : 'btn-outline-dark'}`}
-          onClick={() => setFiltro(cat.id)}
-        >
-          {cat.name}
-        </button>
-      ))}
+      {Array.isArray(categorias) ? (
+        categorias.map((cat) => (
+          <button
+            key={cat.id}
+            className={`btn filtro-btn ${filtroActivo === cat.id ? 'active' : 'btn-outline-dark'}`}
+            onClick={() => setFiltro(cat.id)}
+          >
+            {cat.name}
+          </button>
+        ))
+      ) : (
+        <p>No hay categorías</p>
+      )}
     </div>
   );
 };

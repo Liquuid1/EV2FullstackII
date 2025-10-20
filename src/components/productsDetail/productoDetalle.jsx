@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import './productoDetalle.css';
 import { useParams } from 'react-router-dom';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 
 export const ProductoDetalle = () => {
   const { id } = useParams();
   const [producto, setProducto] = useState();
   const [talla, setTalla] = useState('');
   const [cantidad, setCantidad] = useState(1);
+  const [selectedImage, setSelectedImage] = useState('/img/default.jpg');
   const tallasDisponibles = [38, 39, 40, 41, 42, 43, 44, 45];
-
 
   useEffect(() => {
     fetch(`https://x8ki-letl-twmt.n7.xano.io/api:AZPo4EA2/product/${id}`)
       .then(res => res.json())
-      .then(data => setProducto(data))
+      .then(data => {
+        setProducto(data);
+        const firstImg = (data?.imagenes && Array.isArray(data.imagenes) && data.imagenes.length > 0 && data.imagenes[0]?.url)
+          ? data.imagenes[0].url
+          : (data?.image?.url || data?.imagen || '/img/default.jpg');
+        setSelectedImage(firstImg);
+      })
       .catch(err => console.error(err));
   }, [id]);
-  console.log(id);
-  console.log(producto);
-
 
   const agregarAlCarrito = () => {
     if (!talla) return alert('Selecciona una talla');
@@ -27,7 +31,9 @@ export const ProductoDetalle = () => {
     const nuevoItem = {
       id: producto.id,
       title: producto.title || producto.nombre || '',
-      image: producto.image || producto.imagen || null,
+      image: (producto.imagenes && Array.isArray(producto.imagenes) && producto.imagenes.length > 0)
+        ? producto.imagenes[0].url
+        : (producto.image || producto.imagen || null),
       base_price: Number(producto.base_price || producto.precio || 0),
       talla: talla,
       cantidad: cantidad || 1,
@@ -49,11 +55,35 @@ export const ProductoDetalle = () => {
   return (
     <div className="producto-detalle container py-5">
       <div className="detalle-card">
-        <img src={producto.imagen} alt={producto.nombre} />
+        <div className="imagen-principal">
+          <ImageWithFallback src={selectedImage} alt={producto.nombre || producto.title} />
+        </div>
+
+        {/* Thumbnails: mostrar todas las imágenes del producto */}
+        <div className="thumbnails d-flex gap-2 my-2">
+          {(producto.imagenes && Array.isArray(producto.imagenes) && producto.imagenes.length > 0) ? (
+            producto.imagenes.map((img, idx) => {
+              const url = img?.url || img;
+              return (
+                <ImageWithFallback
+                  key={idx}
+                  src={url}
+                  alt={`${producto.nombre || producto.title} ${idx + 1}`}
+                  className={`thumb ${selectedImage === url ? 'selected' : ''}`}
+                  onClick={() => setSelectedImage(url)}
+                  style={{ cursor: 'pointer', width: 64, height: 64, objectFit: 'cover' }}
+                />
+              );
+            })
+          ) : (
+            <ImageWithFallback src={producto.image?.url || producto.imagen || '/img/default.jpg'} alt="default" style={{ width: 64, height: 64, objectFit: 'cover' }} />
+          )}
+        </div>
+
         <div className="detalle-info">
-          <h2>{producto.nombre}</h2>
-          <p className="precio">${producto.base_price.toLocaleString('es-CL') || "-"}</p>
-          <p className="descripcion">{producto.descripcion}</p>
+          <h2>{producto.nombre || producto.title}</h2>
+          <p className="precio">${Number(producto.base_price || producto.precio || 0).toLocaleString('es-CL') || "-"}</p>
+          <p className="descripcion">{producto.descripcion || producto.description}</p>
 
           <label>Talla:</label>
             <select value={talla} onChange={(e) => setTalla(e.target.value)}>
@@ -67,7 +97,7 @@ export const ProductoDetalle = () => {
             type="number"
             min="1"
             value={cantidad}
-            onChange={(e) => setCantidad(parseInt(e.target.value))}
+            onChange={(e) => setCantidad(parseInt(e.target.value) || 1)}
           />
 
           <button className="btn-agregar" onClick={agregarAlCarrito}>
