@@ -17,10 +17,35 @@ export const Products = () => {
       try {
         const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:AZPo4EA2/product');
         const data = await response.json();
-        setProductos(data);
+
+        // Normalizar la respuesta a un array para evitar errores si el backend devuelve un objeto
+        let items = [];
+        if (Array.isArray(data)) {
+          items = data;
+        } else if (Array.isArray(data?.data)) {
+          items = data.data;
+        } else if (Array.isArray(data?.products)) {
+          items = data.products;
+        } else {
+          // Si no es array, intentar convertir objetos con un solo registro a array
+          if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+            items = [data];
+          } else {
+            items = [];
+          }
+        }
+
+        if (items.length === 0) throw new Error('No se encontraron productos');
+        setProductos(items);
       } catch (err) {
         console.error('Error al cargar productos:', err);
         setError('No se pudieron cargar los productos');
+        setProductos([
+          { id: 1, title: 'Producto de ejemplo 1', image: '../assets/placeholder.jpg', base_price: 1000, category_id: 'sneakers' },
+          { id: 2, title: 'Producto de ejemplo 2', image: '../assets/placeholder.jpg', base_price: 1500, category_id: 'boots' },
+          { id: 3, title: 'Producto de ejemplo 3', image: '../assets/placeholder.jpg', base_price: 2000, category_id: 'sandals' },
+          { id: 4, title: 'Producto de ejemplo 4', image: '../assets/placeholder.jpg', base_price: 2500, category_id: 'formal' }
+        ]);
       } finally {
         setLoading(false);
       }
@@ -54,13 +79,20 @@ export const Products = () => {
     localStorage.setItem('carrito', JSON.stringify(carrito));
     alert('Producto agregado al carrito');
   };
-
+  
   // 🔍 Filtrar productos según búsqueda y categoría
-  const productosFiltrados = productos.filter((p) => {
-    const coincideBusqueda = p.title.toLowerCase().includes(busqueda.toLowerCase());
-    const coincideFiltro =
-      filtro === 'todos' || p.category_id === filtro || p.category_id === parseInt(filtro);
-    return coincideBusqueda && coincideFiltro;
+  const productosArray = Array.isArray(productos) ? productos : [];
+  const productosFiltrados = productosArray.filter((p) => {
+    try {
+      const titulo = (p.title || p.nombre || '').toString().toLowerCase();
+      const coincideBusqueda = titulo.includes(busqueda.toLowerCase());
+      const coincideFiltro =
+        filtro === 'todos' || p.category_id === filtro || p.category_id === parseInt(filtro);
+      return coincideBusqueda && coincideFiltro;
+    } catch (err) {
+      console.error('Error al filtrar productos:', err);
+      return false; // no incluir en filtrado en caso de error
+    }
   });
 
   return (

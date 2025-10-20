@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import './ProductCard.css';
 import { Link } from 'react-router-dom';
-
-
+import { ImageWithFallback } from '../common/ImageWithFallback';
+ 
 export const ProductCard = ({ producto, agregarAlCarrito }) => {
   const [talla, setTalla] = useState('');
   const tallas = producto?.talla && Array.isArray(producto.talla) && producto.talla.length > 0
     ? producto.talla
     : [38,39,40,41,42,43,44,45];
 
+  const imagenSrc = producto?.imagenes && Array.isArray(producto.imagenes) && producto.imagenes.length > 0
+    ? producto.imagenes[0]?.url
+    : (producto?.image?.url || producto?.imagen || null);
+
   return (
     <div className="card product-card h-200 shadow-sm">
       <Link to={`/producto/${producto.id}`} className="text-decoration-none text-dark">
-        <img
-          src={(producto.image && producto.image.url) ? producto.image.url : '/img/default.jpg'}
+        <ImageWithFallback
+          src={imagenSrc}
           alt={producto.title}
           className="card-img-top"
         />

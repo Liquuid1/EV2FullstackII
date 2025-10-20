@@ -20,6 +20,22 @@ const ProductSection = ({ admin }) => {
 
       {accion === 'agregar' && (
         <ProductForm onSubmit={async (payload) => {
+          // Si el hijo notifica que ya creó el producto:
+          if (payload && payload.action === 'created' && payload.product) {
+            // sólo refrescamos la lista y navegamos a listar (evita doble creación)
+            await fetchProductos();
+            setAccion('listar');
+            return;
+          }
+
+          // Caso legacy: si el hijo envía directamente el producto creado (con id), refrescar también
+          if (payload && (payload.id || payload._id)) {
+            await fetchProductos();
+            setAccion('listar');
+            return;
+          }
+
+          // Fallback: si el hijo no creó el producto y manda datos para crear, usamos agregarProducto
           const ok = await agregarProducto(payload);
           if (ok) setAccion('listar');
         }} />
