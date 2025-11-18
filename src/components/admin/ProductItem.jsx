@@ -88,7 +88,7 @@ const ProductItem = ({ product, onDelete, onSave }) => {
         <>
           <b>{product.title}</b> - {product.brand} - ${product.base_price} <br/>
           <span style={{fontSize:'0.95em',color:'#0077b6'}}>{product.description}</span>
-          <div style={{display:'flex', gap:8, marginTop:8}}>
+          <div style={{display:'flex', gap:8, marginTop:8, marginLeft:'auto'}}>
             <button onClick={handleDelete} disabled={isProcessing}>Eliminar</button>
             <button className="edit-btn" onClick={() => setEditing(true)} disabled={isProcessing}>Editar</button>
           </div>

@@ -16,7 +16,7 @@ export const Admin = () => {
   return (
     <div className="admin-panel">
       <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-        <h2>Panel de Administración</h2>
+        <h2>Panel de Administracin</h2>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: 32 }}>

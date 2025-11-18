@@ -22,15 +22,25 @@ const UserSection = ({ admin }) => {
         <UserForm onSubmit={async (payload) => {
           const ok = await agregarUsuario(payload);
           if (ok) setAccion('listar');
+          return ok; // devolver resultado para que el form pueda reaccionar correctamente
         }} />
       )}
 
       {accion === 'listar' && (
-        <ul className="admin-list">
+        <>
+          {/* Encabezado de columnas: Usuario --- Correo --- Rol */}
+          <div className="admin-list-header" style={{marginBottom:8}}>
+            <div className="user-col user-name">Usuario</div>
+            <div className="user-col user-email">Correo</div>
+            <div className="user-col user-role">Rol</div>
+            <div className="user-col user-actions">Acciones</div>
+          </div>
+          <ul className="admin-list">
           {usuarios.map(u => (
             <UserItem key={u.id} user={u} onDelete={() => eliminarUsuario(u.id)} onSave={(datos) => modificarUsuario(u.id, datos)} />
           ))}
         </ul>
+        </>
       )}
     </section>
   );

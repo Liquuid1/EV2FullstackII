@@ -22,8 +22,17 @@ const UserItem = ({ user, onDelete, onSave }) => {
         </div>
       ) : (
         <>
-          <b>{user.nombre || user.name || ''}</b> - {user.correo || user.email || ''} <br/>
-          <div style={{display:'flex', gap:8, marginTop:8}}>
+          <div className="user-col user-name">
+            <b>{user.nombre || user.name || ''}</b>
+          </div>
+          <div className="user-col user-email">
+            {user.correo || user.email || ''}
+          </div>
+          {/* Mostrar rol antes de los botones */}
+          <div className="user-col user-role">
+            {user.rol || user.role || '—'}
+          </div>
+          <div className="user-actions">
             <button onClick={onDelete}>Eliminar</button>
             <button className="edit-btn" onClick={() => setEditing(true)}>Editar</button>
           </div>
